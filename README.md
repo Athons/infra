@@ -41,7 +41,7 @@ Documenting athon's infrastructure
 * CNAME `hack` to `cranky-hermann-f72f70.netlify.app`
 * CNAME `stats` to `infallible-shirley-b1f453.netlify.app`
 
-Both CNAMES are proxies by Cloudflare to give access to statistics (how https://stats.athon.u/ gets data).
+Both CNAMES are proxies by Cloudflare to give access to statistics (how https://stats.athon.uk/ gets data).
 
 ## Hosting
 
@@ -66,7 +66,7 @@ We store generated content in a GCloud bucket, with the following CORS settings:
 ]
 ```
 
-Currently we just have the statistics stored there: `https://athon-uk.storage.googleapis.com/data.json`.
+Currently we just have the statistics stored there: https://athon-uk.storage.googleapis.com/data.json
 
 Future data like events will also be hosted in the same bucket. Probably as `events.json`.
 
