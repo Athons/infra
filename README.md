@@ -41,36 +41,47 @@ Documenting athon's infrastructure
 * CNAME `hack` to `cranky-hermann-f72f70.netlify.app`
 * CNAME `stats` to `infallible-shirley-b1f453.netlify.app`
 
-Those are both proxied to give access to statistics.
+Both CNAMES are proxies by Cloudflare to give access to statistics (how https://stats.athon.u/ gets data).
 
 ## Hosting
 
 ### Static Content
 
-Static websites are hosted by netlify on the free tier, you can find each of the sites build logs in their READMEs
+The static websites are hosted by Netlify on the free tier and  you can find each of the sites build logs in their READMEs:
 
 * https://app.netlify.com/sites/cranky-hermann-f72f70/deploys
 
 ### Generated Content
 
-Currently the only dynamic content is the statistics, which is hosted in a GCloud bucket `https://athon-uk.storage.googleapis.com/data.json`.
+We store generated content in a GCloud bucket, with the following CORS settings:
+
+```
+[
+    {
+      "origin": ["https://stats.athon.uk", "http://localhost:8000"],
+      "method": ["GET"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+]
+```
+
+Currently we just have the statistics stored there: `https://athon-uk.storage.googleapis.com/data.json`.
 
 Future data like events will also be hosted in the same bucket. Probably as `events.json`.
 
 ### Compute
 
-We have two jobs current:
+We have two scheduled jobs, which run by Github Actions:
 
-* Fetching stats from cloudflare
-* Querying Github for changes to organisations repositories.
-
-Both of which run as scheduled github actions.
+* [Fetching stats from cloudflare](https://github.com/Athons/cfstats/actions?query=workflow%3A%22Update+Stats%22)
+* [Querying Github for changes to organisations repositories](https://github.com/Athons/events/actions?query=workflow%3A%22Run+Tool%22)
 
 We have no permanent servers.
 
 #### GH Secrets
 
-If writing a job to run on these, you'll have about the follow organisation wide secrets:
+If writing a job to run as an action, you'll have access to the follow organisation wide secrets:
 
 * `CF_TOKEN` - Read only token to the cloudflare API
 * `GCLOUD_BUCKET` - Name of our Gcloud bucket (athon-uk), stored as a secret for simplicty.
